@@ -65,11 +65,12 @@ public class ResepMakanan extends javax.swing.JFrame {
         tableResep = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         cari = new javax.swing.JTextField();
-        jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(255, 204, 255));
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         jLabel1.setText("Aplikasi Resep Makanan");
@@ -110,6 +111,11 @@ public class ResepMakanan extends javax.swing.JFrame {
         });
 
         jButton4.setText("Keluar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         tableResep.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,7 +137,11 @@ public class ResepMakanan extends javax.swing.JFrame {
 
         jLabel6.setText("Cari Resep Berdasarkan Nama ");
 
-        jButton5.setText("Cari");
+        cari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cariKeyReleased(evt);
+            }
+        });
 
         jButton6.setText("Ekspor");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -175,26 +185,19 @@ public class ResepMakanan extends javax.swing.JFrame {
                                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel5)))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jButton1)
-                                                .addGap(16, 16, 16)
-                                                .addComponent(jButton2)
-                                                .addGap(12, 12, 12)
-                                                .addComponent(jButton3))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                                .addGap(90, 90, 90)
-                                                .addComponent(cari, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jButton1)
+                                        .addGap(16, 16, 16)
+                                        .addComponent(jButton2)
+                                        .addGap(12, 12, 12)
+                                        .addComponent(jButton3)
                                         .addGap(18, 18, 18)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jButton5)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
-                                                .addComponent(jButton7))
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jButton4)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jButton6))))))))
+                                        .addComponent(jButton4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                                        .addComponent(jButton6))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(cari, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(88, 88, 88)
+                                        .addComponent(jButton7))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(243, 243, 243)
                         .addComponent(jLabel1)))
@@ -232,7 +235,6 @@ public class ResepMakanan extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5)
                     .addComponent(jButton7))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -290,6 +292,7 @@ public class ResepMakanan extends javax.swing.JFrame {
             pst.setString(2, cmbKategori.getSelectedItem().toString());
             pst.setString(3, txtBahan.getText());
             pst.setString(4, cara.getText());
+            pst.setString(5, id);
             pst.executeUpdate();// TODO add your handling code here:
             loadData();
             bersih();
@@ -330,9 +333,7 @@ public class ResepMakanan extends javax.swing.JFrame {
         cmbKategori.setSelectedItem(tableResep.getValueAt(row, 2).toString());
         txtBahan.setText(tableResep.getValueAt(row, 3).toString());
         cara.setText(tableResep.getValueAt(row, 4).toString());
-        jButton1.setEnabled(false);
-        jButton2.setEnabled(true);
-        jButton3.setEnabled(true);        // TODO add your handling code here:
+               // TODO add your handling code here:
     }//GEN-LAST:event_tableResepMouseClicked
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -398,6 +399,14 @@ public class ResepMakanan extends javax.swing.JFrame {
     }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void cariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cariKeyReleased
+        loadData();        
+    }//GEN-LAST:event_cariKeyReleased
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        System.exit(0);        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -441,7 +450,6 @@ public class ResepMakanan extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
