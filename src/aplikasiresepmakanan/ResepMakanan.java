@@ -329,6 +329,7 @@ public class ResepMakanan extends javax.swing.JFrame {
         txtNamaMakanan.setText(tableResep.getValueAt(row, 1).toString());
         cmbKategori.setSelectedItem(tableResep.getValueAt(row, 2).toString());
         txtBahan.setText(tableResep.getValueAt(row, 3).toString());
+        cara.setText(tableResep.getValueAt(row, 4).toString());
         jButton1.setEnabled(false);
         jButton2.setEnabled(true);
         jButton3.setEnabled(true);        // TODO add your handling code here:
