@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * @author USER
  */
 public class Koneksi {
-    private static String DB = "jdbc:mysql://localhost/penjualan_app";
+    private static String DB = "jdbc:mysql://localhost/resep";
     //function untuk konek untuk ke database
     public static Connection getKoneksi(){
         Connection conn = null  ;
