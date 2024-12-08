@@ -1,21 +1,28 @@
 
 package aplikasiresepmakanan;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import controller.ResepController;
+import java.io.*;
+import model.Resep;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
+import java.util.List;
+
+//import java.io.BufferedReader;
+//import java.io.BufferedWriter;
+//import java.io.File;
+//import java.io.FileReader;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//import java.sql.Connection;
+//import java.sql.PreparedStatement;
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.util.logging.Level;
+
+//import javax.swing.JFileChooser;
+//import javax.swing.JOptionPane;
+//import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,19 +30,25 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ResepMakanan extends javax.swing.JFrame {
 
-
+    private DefaultTableModel model;
+    private ResepController controller;
     /**
      * Creates new form ResepMakanan
      */
     public ResepMakanan() {
         initComponents();
     
+        controller = new ResepController();
+        model = new DefaultTableModel(new String[]
+
+        {"No", "Nama", "Bahan", "Kategori", "Cara Memasak"}, 0);
+
+        tableResep.setModel(model);
         loadData();
-        bersih();
     }
-    String id;
-    Connection conn = Koneksi.getKoneksi();
-    PreparedStatement pst;
+//    String id;
+//    Connection conn = Koneksi.getKoneksi();
+//    PreparedStatement pst;
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -65,8 +78,8 @@ public class ResepMakanan extends javax.swing.JFrame {
         tableResep = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         cari = new javax.swing.JTextField();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        Eksport = new javax.swing.JButton();
+        Import = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -143,17 +156,17 @@ public class ResepMakanan extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setText("Ekspor");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        Eksport.setText("Ekspor");
+        Eksport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                EksportActionPerformed(evt);
             }
         });
 
-        jButton7.setText("Import");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        Import.setText("Import");
+        Import.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                ImportActionPerformed(evt);
             }
         });
 
@@ -193,15 +206,15 @@ public class ResepMakanan extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(jButton4)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
-                                        .addComponent(jButton6))
+                                        .addComponent(Eksport))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                         .addComponent(cari, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(88, 88, 88)
-                                        .addComponent(jButton7))))))
+                                        .addComponent(Import))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(243, 243, 243)
                         .addComponent(jLabel1)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,12 +243,12 @@ public class ResepMakanan extends javax.swing.JFrame {
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton4)
-                    .addComponent(jButton6))
+                    .addComponent(Eksport))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7))
+                    .addComponent(Import))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -245,162 +258,174 @@ public class ResepMakanan extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 12, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-    try {
-            if(txtNamaMakanan.getText().isEmpty()||cmbKategori.getSelectedItem().toString().isEmpty()||txtBahan.getText().isEmpty()||cara.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null, "Data resep belum diisi","Gagal ditambah data", 2);
-            }else{
-            String queryTambah = "insert into resep_makanan values (null,?,?,?,?)";
-            pst = conn.prepareStatement(queryTambah);
-            pst.setString(1, txtNamaMakanan.getText());
-            pst.setString(2, cmbKategori.getSelectedItem().toString());
-            pst.setString(3, txtBahan.getText());
-            pst.setString(4, cara.getText());
-            pst.executeUpdate();// TODO add your handling code here:
-            loadData();
-            bersih();
-            JOptionPane.showMessageDialog(null,"Data Berhasil ditambah", "Sukses", 1);}
-        } catch (SQLException ex) {
-            Logger.getLogger(ResepMakanan.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        addResep();
+//    try {
+//            if(txtNamaMakanan.getText().isEmpty()||cmbKategori.getSelectedItem().toString().isEmpty()||txtBahan.getText().isEmpty()||cara.getText().isEmpty()){
+//                JOptionPane.showMessageDialog(null, "Data resep belum diisi","Gagal ditambah data", 2);
+//            }else{
+//            String queryTambah = "insert into resep_makanan values (null,?,?,?,?)";
+//            pst = conn.prepareStatement(queryTambah);
+//            pst.setString(1, txtNamaMakanan.getText());
+//            pst.setString(2, cmbKategori.getSelectedItem().toString());
+//            pst.setString(3, txtBahan.getText());
+//            pst.setString(4, cara.getText());
+//            pst.executeUpdate();// TODO add your handling code here:
+//            loadData();
+//            bersih();
+//            JOptionPane.showMessageDialog(null,"Data Berhasil ditambah", "Sukses", 1);}
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ResepMakanan.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            if(txtNamaMakanan.getText().isEmpty()||cmbKategori.getSelectedItem().toString().isEmpty()||txtBahan.getText().isEmpty()||cara.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null, "Data Resep belum diisi","Gagal ditambah data", 2);
-            }else{
-            String queryTambah = "update resep_makanan set nama_makanan=?, Kategori=?, bahan=?, cara_masak=? where id=?";
-            pst = conn.prepareStatement(queryTambah);
-            pst.setString(1, txtNamaMakanan.getText());
-            pst.setString(2, cmbKategori.getSelectedItem().toString());
-            pst.setString(3, txtBahan.getText());
-            pst.setString(4, cara.getText());
-            pst.setString(5, id);
-            pst.executeUpdate();// TODO add your handling code here:
-            loadData();
-            bersih();
-            JOptionPane.showMessageDialog(null,"Data Berhasil diubah", "Sukses", 1);}
-        } catch (SQLException ex) {
-            Logger.getLogger(ResepMakanan.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        editResep();
+//        try {
+//            if(txtNamaMakanan.getText().isEmpty()||cmbKategori.getSelectedItem().toString().isEmpty()||txtBahan.getText().isEmpty()||cara.getText().isEmpty()){
+//                JOptionPane.showMessageDialog(null, "Data Resep belum diisi","Gagal ditambah data", 2);
+//            }else{
+//            String queryTambah = "update resep_makanan set nama_makanan=?, Kategori=?, bahan=?, cara_masak=? where id=?";
+//            pst = conn.prepareStatement(queryTambah);
+//            pst.setString(1, txtNamaMakanan.getText());
+//            pst.setString(2, cmbKategori.getSelectedItem().toString());
+//            pst.setString(3, txtBahan.getText());
+//            pst.setString(4, cara.getText());
+//            pst.setString(5, id);
+//            pst.executeUpdate();// TODO add your handling code here:
+//            loadData();
+//            bersih();
+//            JOptionPane.showMessageDialog(null,"Data Berhasil diubah", "Sukses", 1);}
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ResepMakanan.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        try {
-            if(txtNamaMakanan.getText().isEmpty()||cmbKategori.getSelectedItem().toString().isEmpty()||txtBahan.getText().isEmpty()||cara.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null, "Data Resep belum diisi","Gagal ditambah data", 2);
-            }else{
-                int konfirmasi = JOptionPane.showConfirmDialog(null, "Hapus data Resep ini?", "Konfirmasi Hapus",0);
-                if(konfirmasi==0){
-            String queryTambah = "delete from resep_makanan where id=?";
-            pst = conn.prepareStatement(queryTambah);
-                    
-            pst.setString(1, id);
-            pst.executeUpdate();// TODO add your handling code here:
-            loadData();
-            bersih();
-            JOptionPane.showMessageDialog(null,"Data Resep Berhasil dihapus", "Sukses", 1);}}
-        } catch (SQLException ex) {
-            Logger.getLogger(ResepMakanan.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        deleteResep();
+//        try {
+//            if(txtNamaMakanan.getText().isEmpty()||cmbKategori.getSelectedItem().toString().isEmpty()||txtBahan.getText().isEmpty()||cara.getText().isEmpty()){
+//                JOptionPane.showMessageDialog(null, "Data Resep belum diisi","Gagal ditambah data", 2);
+//            }else{
+//                int konfirmasi = JOptionPane.showConfirmDialog(null, "Hapus data Resep ini?", "Konfirmasi Hapus",0);
+//                if(konfirmasi==0){
+//            String queryTambah = "delete from resep_makanan where id=?";
+//            pst = conn.prepareStatement(queryTambah);
+//                    
+//            pst.setString(1, id);
+//            pst.executeUpdate();// TODO add your handling code here:
+//            loadData();
+//            bersih();
+//            JOptionPane.showMessageDialog(null,"Data Resep Berhasil dihapus", "Sukses", 1);}}
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ResepMakanan.class.getName()).log(Level.SEVERE, null, ex);
+//        } 
 
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void tableResepMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableResepMouseClicked
-        int row = tableResep.getSelectedRow();
-       id = tableResep.getValueAt(row, 0).toString();
-        txtNamaMakanan.setText(tableResep.getValueAt(row, 1).toString());
-        cmbKategori.setSelectedItem(tableResep.getValueAt(row, 2).toString());
-        txtBahan.setText(tableResep.getValueAt(row, 3).toString());
-        cara.setText(tableResep.getValueAt(row, 4).toString());
-               // TODO add your handling code here:
+
+        int selectedRow = tableResep.getSelectedRow();
+        if (selectedRow != -1) {
+        populateInputFields(selectedRow);
+}
+//        int row = tableResep.getSelectedRow();
+//       id = tableResep.getValueAt(row, 0).toString();
+//        txtNamaMakanan.setText(tableResep.getValueAt(row, 1).toString());
+//        cmbKategori.setSelectedItem(tableResep.getValueAt(row, 2).toString());
+//        txtBahan.setText(tableResep.getValueAt(row, 3).toString());
+//        cara.setText(tableResep.getValueAt(row, 4).toString());
+//               // TODO add your handling code here:
     }//GEN-LAST:event_tableResepMouseClicked
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-    try {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Save as TXT File");
-        int userSelection = fileChooser.showSaveDialog(null);
+    private void EksportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EksportActionPerformed
+        exportToCSV();
+        
+//    try {
+//        JFileChooser fileChooser = new JFileChooser();
+//        fileChooser.setDialogTitle("Save as TXT File");
+//        int userSelection = fileChooser.showSaveDialog(null);
+//
+//        if (userSelection == JFileChooser.APPROVE_OPTION) {
+//            File file = fileChooser.getSelectedFile();
+//            if (!file.getName().endsWith(".txt")) {
+//                file = new File(file.getAbsolutePath() + ".txt");
+//            }
+//
+//            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+//
+//            // Tulis header
+//            writer.write("ID\tNama Makanan\tKategori\tBahan\tCara Memasak\n");
+//
+//            // Tulis data dari tabel
+//            for (int i = 0; i < tableResep.getRowCount(); i++) {
+//                for (int j = 0; j < tableResep.getColumnCount(); j++) {
+//                    writer.write(tableResep.getValueAt(i, j).toString());
+//                    if (j < tableResep.getColumnCount() - 1) {
+//                        writer.write("\t");
+//                    }
+//                }
+//                writer.newLine();
+//            }
+//
+//            writer.close();
+//            JOptionPane.showMessageDialog(null, "Data berhasil diekspor!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+//        }
+//    } catch (IOException ex) {
+//        JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat mengekspor data!", "Error", JOptionPane.ERROR_MESSAGE);
+//    }    // TODO add your handling code here:
+    }//GEN-LAST:event_EksportActionPerformed
 
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            if (!file.getName().endsWith(".txt")) {
-                file = new File(file.getAbsolutePath() + ".txt");
-            }
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-
-            // Tulis header
-            writer.write("ID\tNama Makanan\tKategori\tBahan\tCara Memasak\n");
-
-            // Tulis data dari tabel
-            for (int i = 0; i < tableResep.getRowCount(); i++) {
-                for (int j = 0; j < tableResep.getColumnCount(); j++) {
-                    writer.write(tableResep.getValueAt(i, j).toString());
-                    if (j < tableResep.getColumnCount() - 1) {
-                        writer.write("\t");
-                    }
-                }
-                writer.newLine();
-            }
-
-            writer.close();
-            JOptionPane.showMessageDialog(null, "Data berhasil diekspor!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-        }
-    } catch (IOException ex) {
-        JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat mengekspor data!", "Error", JOptionPane.ERROR_MESSAGE);
-    }    // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        try {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Open TXT File");
-        int userSelection = fileChooser.showOpenDialog(null);
-
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line;
-
-            // Skip header line
-            reader.readLine();
-
-            DefaultTableModel dtm = (DefaultTableModel) tableResep.getModel();
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split("\t"); // Memisahkan kolom dengan tab
-                dtm.addRow(data);
-            }
-            reader.close();
-            JOptionPane.showMessageDialog(null, "Data berhasil diimpor!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-        }
-    } catch (IOException ex) {
-        JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat mengimpor data!", "Error", JOptionPane.ERROR_MESSAGE);
-    }        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+    private void ImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ImportActionPerformed
+       importFromCSV();
+//        try {
+//        JFileChooser fileChooser = new JFileChooser();
+//        fileChooser.setDialogTitle("Open TXT File");
+//        int userSelection = fileChooser.showOpenDialog(null);
+//
+//        if (userSelection == JFileChooser.APPROVE_OPTION) {
+//            File file = fileChooser.getSelectedFile();
+//            BufferedReader reader = new BufferedReader(new FileReader(file));
+//            String line;
+//
+//            // Skip header line
+//            reader.readLine();
+//
+//            DefaultTableModel dtm = (DefaultTableModel) tableResep.getModel();
+//            while ((line = reader.readLine()) != null) {
+//                String[] data = line.split("\t"); // Memisahkan kolom dengan tab
+//                dtm.addRow(data);
+//            }
+//            reader.close();
+//            JOptionPane.showMessageDialog(null, "Data berhasil diimpor!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+//        }
+//    } catch (IOException ex) {
+//        JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat mengimpor data!", "Error", JOptionPane.ERROR_MESSAGE);
+//    }        // TODO add your handling code here:
+    }//GEN-LAST:event_ImportActionPerformed
 
     private void cariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cariKeyReleased
-        loadData();        
+        searchResep();        
     }//GEN-LAST:event_cariKeyReleased
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -443,6 +468,8 @@ public class ResepMakanan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Eksport;
+    private javax.swing.JButton Import;
     private javax.swing.JTextArea cara;
     private javax.swing.JTextField cari;
     private javax.swing.JComboBox<String> cmbKategori;
@@ -450,8 +477,6 @@ public class ResepMakanan extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -468,30 +493,234 @@ public class ResepMakanan extends javax.swing.JFrame {
 
 private void loadData() {
     try {
-            String[] judul= {"ID", "Nama Makanan", "Kategori", "Bahan","Cara Memasak"};
-            DefaultTableModel dtm = new DefaultTableModel(null, judul);
-            tableResep.setModel(dtm);
-            String sql = "SELECT * FROM resep_makanan";
-            if (!cari.getText().isEmpty()){
-                sql = "SELECT * FROM resep_makanan WHERE nama_makanan like '%"+cari.getText()+"%';";
-            }
-            pst = conn.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()){
-                String[] data = {rs.getString(1), rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)};
-                dtm.addRow(data);
-            }   } catch (SQLException ex) {
-            Logger.getLogger(ResepMakanan.class.getName()).log(Level.SEVERE, null, ex);
+        model.setRowCount(0);
+        List<Resep> reseps = controller.getAllReseps();
+        
+        int rowNumber = 1;
+        for (Resep resep : reseps) {
+            model.addRow(new Object[]{
+                rowNumber++,
+                resep.getNama(),
+                resep.getBahan(),
+                resep.getKategori(),
+                resep.getMasak()
+            });
         }
+    } catch (SQLException e) {
+    showError(e.getMessage());
+    }
+}
+private void showError(String message) {
+JOptionPane.showMessageDialog(this, message, "Error",
+JOptionPane.ERROR_MESSAGE);
+    
+}
+private void addResep() {
+    
+    String nama = txtNamaMakanan.getText().trim();
+    String bahan = txtBahan.getText().trim();
+    String kategori = (String) cmbKategori.getSelectedItem();
+    String masak = cara.getText().trim();
+    
+    try {controller.addResep(nama, bahan, kategori, masak);
+        loadData();
+        JOptionPane.showMessageDialog(this, "Resep berhasil ditambahkan!");
+        clearInputFields();
+    } catch (SQLException ex) {
+        showError("Gagal menambahkan resep: " + ex.getMessage());
+    }
 }
 
-    
+private void editResep() {
+    int selectedRow = tableResep.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Pilih resep yang ingin diperbarui.", "Kesalahan", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    int id = (int) model.getValueAt(selectedRow, 0);
+    String nama = txtNamaMakanan.getText().trim();
+    String bahan = txtBahan.getText().trim();
+    String kategori = (String) cmbKategori.getSelectedItem().toString();
+    String masak = cara.getText().trim();
+    try {
+        controller.updateResep(id, nama, bahan, kategori, masak);
+    loadData();
+    JOptionPane.showMessageDialog(this, "Resep berhasil diperbarui!");
+    clearInputFields(); 
+    } catch (SQLException ex) {
+        showError("Gagal memperbarui resep: " + ex.getMessage());
+    }
+}
+private void populateInputFields(int selectedRow) {
+    // Ambil data dari JTable
+    String nama = model.getValueAt(selectedRow, 1).toString();
+    String bahan = model.getValueAt(selectedRow, 2).toString();
+    String kategori = model.getValueAt(selectedRow, 3).toString();
+    String masak = model.getValueAt(selectedRow, 4).toString();
+    // Set data ke komponen input
+    txtNamaMakanan.setText(nama);
+    txtBahan.setText(bahan);
+    cmbKategori.setSelectedItem(kategori);
+    cara.setText(masak);
+}
 
-    private void bersih() {
+private void deleteResep() {
+    int selectedRow = tableResep.getSelectedRow();
+    if (selectedRow != -1) {
+        int id = (int) model.getValueAt(selectedRow, 0);
+        try {
+            controller.deleteResep(id);
+            loadData();
+            JOptionPane.showMessageDialog(this, "Resep berhasil dihapus!");
+            clearInputFields();
+        } catch (SQLException e) {
+                showError(e.getMessage());
+        }
+    }
+}
+
+private void searchResep() {
+    String keyword = cari.getText().trim();
+    if (!keyword.isEmpty()) {
+        try {
+            List<Resep> rsps = controller.searchReseps(keyword);
+            model.setRowCount(0); // Bersihkan tabel
+            for (Resep rsp : rsps) {
+                model.addRow(new Object[]{
+                    rsp.getId(),
+                    rsp.getNama(),
+                    rsp.getBahan(),
+                    rsp.getKategori(),
+                    rsp.getMasak()
+                });
+            }
+            if (rsps.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tidak ada resep ditemukan.");
+            }
+        } catch (SQLException ex) {
+            showError(ex.getMessage());
+        }
+    } else {
+        loadData();
+    }
+}
+
+private void exportToCSV() {
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Simpan File CSV");
+    int userSelection = fileChooser.showSaveDialog(this);
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+    // Tambahkan ekstensi .csv jika pengguna tidak menambahkannya
+        if (!fileToSave.getAbsolutePath().endsWith(".csv")) {
+            fileToSave = new File(fileToSave.getAbsolutePath() + ".csv");
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+            writer.write("ID,Nama,Bahan,Kategori,Cara Memasak\n"); // Header CSV
+            for (int i = 0; i < model.getRowCount(); i++) {
+                writer.write(
+                    model.getValueAt(i, 0) + "," +
+                    model.getValueAt(i, 1) + "," +
+                    model.getValueAt(i, 2) + "," +
+                    model.getValueAt(i, 3) + "\n"+
+                    model.getValueAt(i, 4) + "\n"
+                );
+            }
+            JOptionPane.showMessageDialog(this, "Data berhasil diekspor ke " + fileToSave.getAbsolutePath());
+        } catch (IOException ex) {
+            showError("Gagal menulis file: " + ex.getMessage());
+        }
+    }
+}
+
+private void importFromCSV() {
+    showCSVGuide();
+    int confirm = JOptionPane.showConfirmDialog(
+        this,
+        "Apakah Anda yakin file CSV yang dipilih sudah sesuai dengan format?",
+        "Konfirmasi Impor CSV",
+        JOptionPane.YES_NO_OPTION
+    );
+        if (confirm == JOptionPane.YES_OPTION) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Pilih File CSV");
+            int userSelection = fileChooser.showOpenDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToOpen = fileChooser.getSelectedFile();
+                try (BufferedReader reader = new BufferedReader(new
+                FileReader(fileToOpen))) {
+
+                String line = reader.readLine(); // Baca header
+                if (!validateCSVHeader(line)) {
+                    JOptionPane.showMessageDialog(this, "Format header CSV tidak valid. Pastikan header adalah: ID,Nama,Bahan,Kategori",
+                    "Kesalahan CSV", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int rowCount = 0;
+                int errorCount = 0;
+                int duplicateCount = 0;
+                StringBuilder errorLog = new StringBuilder("Baris dengan kesalahan:\n");
+                while ((line = reader.readLine()) != null) {
+                    rowCount++;
+                    String[] data = line.split(",");
+                    if (data.length != 5) {
+                        errorCount++;
+                        errorLog.append("Baris ").append(rowCount +1).append(": Format kolom tidak sesuai.\n");
+                    continue;
+                }
+                String nama = data[1].trim();
+                String nomorTelepon = data[2].trim();
+                String kategori = data[3].trim();
+                String masak = data[3].trim();
+                if (nama.isEmpty() || nomorTelepon.isEmpty()) {
+                    errorCount++;
+                    errorLog.append("Baris ").append(rowCount +
+                    1).append(": Nama atau Bahan kosong.\n");
+                continue;
+                }
+
+                try {
+                    controller.addResep(nama, nomorTelepon,
+                    kategori, masak);
+                } catch (SQLException ex) {
+                    errorCount++;
+                    errorLog.append("Baris ").append(rowCount +
+                    1).append(": Gagal menyimpan ke database -").append(ex.getMessage()).append("\n");
+                }
+                }
+                loadData();
+                if (errorCount > 0 || duplicateCount > 0) {
+                    errorLog.append("\nTotal baris dengan kesalahan:").append(errorCount).append("\n");errorLog.append("Total baris duplikat:").append(duplicateCount).append("\n");
+                    JOptionPane.showMessageDialog(this,
+                    errorLog.toString(), "Kesalahan Impor", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Semua data berhasil diimpor.");
+                }
+                } catch (IOException ex) {
+                    showError("Gagal membaca file: " + ex.getMessage());
+                }
+        }
+    }
+}
+private void showCSVGuide() {
+    String guideMessage = "Format CSV untuk impor data:\n" +
+    "- Header wajib: ID, Nama, Bahan, Kategori, Cara Memasak\n" +
+    "- ID dapat kosong (akan diisi otomatis)\n" +
+    "- Nama dan Bahan wajib diisi\n" +
+    "- Contoh isi file CSV:\n" +
+    " 1, Ayam, Ayamdan bumbu, Makanan Utama,marinasi ayam\n" +
+    
+    "Pastikan file CSV sesuai format sebelum melakukan impor.";
+    JOptionPane.showMessageDialog(this, guideMessage, "Panduan Format CSV", JOptionPane.INFORMATION_MESSAGE);
+    }
+private boolean validateCSVHeader(String header) {
+    return header != null &&
+    header.trim().equalsIgnoreCase("ID,Nama,Bahan,Kategori, Cara memasak");
+}
+private void clearInputFields() {
         txtNamaMakanan.setText("");
-        cmbKategori.setSelectedItem(0);
         txtBahan.setText("");
+        cmbKategori.setSelectedIndex(0);
         cara.setText("");
     }
-    
 }

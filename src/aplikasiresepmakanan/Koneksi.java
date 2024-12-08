@@ -15,19 +15,20 @@ import java.util.logging.Logger;
  * @author USER
  */
 public class Koneksi {
-    private static String DB = "jdbc:mysql://localhost/resep";
-    //function untuk konek untuk ke database
-    public static Connection getKoneksi(){
-        Connection conn = null  ;
-        MysqlDataSource data = new MysqlDataSource();
-        data.setUser("root");
-        data.setPassword("");
-        data.setURL(DB);
-        try {
-            conn = data.getConnection();
-        } catch (SQLException ex) {
-            Logger.getLogger(Koneksi.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return conn;
-    } 
+    
+//    private static String DB = "jdbc:mysql://localhost/resep";
+//    //function untuk konek untuk ke database
+//    public static Connection getKoneksi(){
+//        Connection conn = null  ;
+//        MysqlDataSource data = new MysqlDataSource();
+//        data.setUser("root");
+//        data.setPassword("");
+//        data.setURL(DB);
+//        try {
+//            conn = data.getConnection();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(Koneksi.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return conn;
+//    } 
 }
